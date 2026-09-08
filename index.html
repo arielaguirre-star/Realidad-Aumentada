@@ -6,8 +6,42 @@
         <script src="https://raw.githack.com/AR-js-org/studio-backend/master/src/modules/marker/tools/gesture-detector.js"></script>
         <script src="https://raw.githack.com/AR-js-org/studio-backend/master/src/modules/marker/tools/gesture-handler.js"></script>
         
-        <!-- Componente personalizado para controlar la reproducción de cada video independiente -->
+        <style>
+            /* Botón para desbloquear autoplay en móviles */
+            #btn-start {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.7);
+                color: white;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-family: sans-serif;
+                font-size: 1.5rem;
+                z-index: 9999;
+                cursor: pointer;
+                text-align: center;
+                padding: 20px;
+            }
+        </style>
+
         <script>
+            // Desbloquear audio/video al tocar la pantalla por primera vez
+            function startExperience() {
+                var btn = document.getElementById('btn-start');
+                btn.style.display = 'none';
+
+                var vids = document.querySelectorAll('video');
+                vids.forEach(function(v) {
+                    v.play().then(() => {
+                        v.pause(); // Lo pausamos hasta que escanee el marcador
+                    }).catch(e => console.log(e));
+                });
+            }
+
             AFRAME.registerComponent('videohandler', {
                 schema: {
                     target: { type: 'string' }
@@ -18,7 +52,11 @@
 
                     marker.addEventListener('markerFound', function () {
                         if (this.vid) {
-                            this.vid.play();
+                            this.vid.currentTime = 0;
+                            var playPromise = this.vid.play();
+                            if (playPromise !== undefined) {
+                                playPromise.catch(error => console.log("Error al reproducir:", error));
+                            }
                         }
                     }.bind(this));
 
@@ -33,6 +71,11 @@
     </head>
 
     <body style="margin: 0; overflow: hidden;">
+        <!-- PANTALLA DE INICIO (Garantiza permisos de reproducción en el móvil) -->
+        <div id="btn-start" onclick="startExperience()">
+            Toca la pantalla para comenzar la experiencia AR
+        </div>
+
         <a-scene
             vr-mode-ui="enabled: false"
             loading-screen="enabled: false;"
@@ -41,38 +84,33 @@
             embedded
             gesture-detector
         >
-            <!-- CARGA DE RECURSOS (Ambos videos) -->
             <a-assets>
-                <!-- Video del Proyecto 1 (Cangrejos) -->
                 <video
                     id="vid1"
                     src="assets/cangrejos.mp4"
                     preload="auto"
                     response-type="arraybuffer"
                     loop
-                    crossorigin
+                    crossorigin="anonymous"
                     webkit-playsinline
-                    autoplay
-                    muted
                     playsinline
+                    muted
                 ></video>
 
-                <!-- Video del Proyecto 2 (Torre Eiffel) -->
                 <video
                     id="vid2"
                     src="assets/torre_eiffel.mp4"
                     preload="auto"
                     response-type="arraybuffer"
                     loop
-                    crossorigin
+                    crossorigin="anonymous"
                     webkit-playsinline
-                    autoplay
-                    muted
                     playsinline
+                    muted
                 ></video>
             </a-assets>
 
-            <!-- MARCADOR 1: Proyecto Cangrejos -->
+            <!-- MARCADOR 1: Cangrejos -->
             <a-marker
                 type="pattern"
                 preset="custom"
@@ -89,7 +127,7 @@
             >
                 <a-video
                     src="#vid1"
-                    scale="1 1 1"
+                    scale="1.5 1.5 1.5"
                     position="0 0.1 0"
                     rotation="-90 0 0"
                     class="clickable"
@@ -97,7 +135,7 @@
                 ></a-video>
             </a-marker>
 
-            <!-- MARCADOR 2: Proyecto Torre Eiffel -->
+            <!-- MARCADOR 2: Torre Eiffel -->
             <a-marker
                 type="pattern"
                 preset="custom"
@@ -114,7 +152,7 @@
             >
                 <a-video
                     src="#vid2"
-                    scale="1 1 1"
+                    scale="1.5 1.5 1.5"
                     position="0 0.1 0"
                     rotation="-90 0 0"
                     class="clickable"
@@ -122,7 +160,6 @@
                 ></a-video>
             </a-marker>
 
-            <!-- Cámara de la experiencia -->
             <a-entity camera></a-entity>
         </a-scene>
     </body>
