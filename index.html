@@ -25,12 +25,35 @@
                 text-align: center;
                 padding: 20px;
             }
+
+            /* Botón flotante para activar/desactivar sonido */
+            #btn-audio {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                background: rgba(0, 0, 0, 0.7);
+                border: 2px solid #ffffff;
+                color: white;
+                font-size: 24px;
+                display: none; /* Se muestra al iniciar */
+                justify-content: center;
+                align-items: center;
+                z-index: 9998;
+                cursor: pointer;
+                user-select: none;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            }
         </style>
 
         <script>
+            var isMuted = true;
+
             function startExperience() {
-                var btn = document.getElementById('btn-start');
-                btn.style.display = 'none';
+                document.getElementById('btn-start').style.display = 'none';
+                document.getElementById('btn-audio').style.display = 'flex';
 
                 var vids = document.querySelectorAll('video');
                 vids.forEach(function(v) {
@@ -38,6 +61,23 @@
                         v.pause();
                     }).catch(e => console.log("Permiso de video:", e));
                 });
+            }
+
+            function toggleAudio() {
+                var btn = document.getElementById('btn-audio');
+                var vids = document.querySelectorAll('video');
+                
+                isMuted = !isMuted;
+
+                vids.forEach(function(v) {
+                    v.muted = isMuted;
+                });
+
+                if (isMuted) {
+                    btn.innerHTML = '🔇';
+                } else {
+                    btn.innerHTML = '🔊';
+                }
             }
 
             AFRAME.registerComponent('videohandler', {
@@ -50,6 +90,7 @@
 
                     marker.addEventListener('markerFound', function () {
                         if (this.vid) {
+                            this.vid.muted = isMuted; // Mantiene el estado global de audio
                             this.vid.currentTime = 0;
                             var playPromise = this.vid.play();
                             if (playPromise !== undefined) {
@@ -69,9 +110,13 @@
     </head>
 
     <body style="margin: 0; overflow: hidden;">
+        <!-- Pantalla de inicio -->
         <div id="btn-start" onclick="startExperience()">
             Toca la pantalla para iniciar la experiencia AR
         </div>
+
+        <!-- Botón para alternar audio -->
+        <div id="btn-audio" onclick="toggleAudio()">🔇</div>
 
         <a-scene
             vr-mode-ui="enabled: false"
@@ -82,7 +127,6 @@
             gesture-detector
         >
             <a-assets>
-                <!-- Asegúrate de que los nombres de archivo en la carpeta assets/ sean idénticos (respetando minúsculas) -->
                 <video id="vid1" src="assets/video1.mp4" preload="auto" loop crossorigin="anonymous" webkit-playsinline playsinline muted></video>
                 <video id="vid2" src="assets/video2.mp4" preload="auto" loop crossorigin="anonymous" webkit-playsinline playsinline muted></video>
                 <video id="vid3" src="assets/video3.mp4" preload="auto" loop crossorigin="anonymous" webkit-playsinline playsinline muted></video>
