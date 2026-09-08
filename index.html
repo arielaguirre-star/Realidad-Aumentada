@@ -7,20 +7,19 @@
         <script src="https://raw.githack.com/AR-js-org/studio-backend/master/src/modules/marker/tools/gesture-handler.js"></script>
         
         <style>
-            /* Botón para desbloquear autoplay en móviles */
             #btn-start {
                 position: fixed;
                 top: 0;
                 left: 0;
                 width: 100vw;
                 height: 100vh;
-                background: rgba(0, 0, 0, 0.7);
+                background: rgba(0, 0, 0, 0.75);
                 color: white;
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 font-family: sans-serif;
-                font-size: 1.5rem;
+                font-size: 1.4rem;
                 z-index: 9999;
                 cursor: pointer;
                 text-align: center;
@@ -29,7 +28,6 @@
         </style>
 
         <script>
-            // Desbloquear audio/video al tocar la pantalla por primera vez
             function startExperience() {
                 var btn = document.getElementById('btn-start');
                 btn.style.display = 'none';
@@ -37,7 +35,7 @@
                 var vids = document.querySelectorAll('video');
                 vids.forEach(function(v) {
                     v.play().then(() => {
-                        v.pause(); // Lo pausamos hasta que escanee el marcador
+                        v.pause();
                     }).catch(e => console.log(e));
                 });
             }
@@ -71,9 +69,8 @@
     </head>
 
     <body style="margin: 0; overflow: hidden;">
-        <!-- PANTALLA DE INICIO (Garantiza permisos de reproducción en el móvil) -->
         <div id="btn-start" onclick="startExperience()">
-            Toca la pantalla para comenzar la experiencia AR
+            Toca la pantalla para iniciar la experiencia AR
         </div>
 
         <a-scene
@@ -85,9 +82,10 @@
             gesture-detector
         >
             <a-assets>
+                <!-- Intercambiamos el id asignado si te salían al revés -->
                 <video
                     id="vid1"
-                    src="assets/cangrejos.mp4"
+                    src="assets/torre_eiffel.mp4"
                     preload="auto"
                     response-type="arraybuffer"
                     loop
@@ -99,7 +97,7 @@
 
                 <video
                     id="vid2"
-                    src="assets/torre_eiffel.mp4"
+                    src="assets/cangrejos.mp4"
                     preload="auto"
                     response-type="arraybuffer"
                     loop
@@ -110,7 +108,7 @@
                 ></video>
             </a-assets>
 
-            <!-- MARCADOR 1: Cangrejos -->
+            <!-- MARCADOR 1 -->
             <a-marker
                 type="pattern"
                 preset="custom"
@@ -127,15 +125,16 @@
             >
                 <a-video
                     src="#vid1"
-                    scale="1.5 1.5 1.5"
-                    position="0 0.1 0"
+                    width="1.6"
+                    height="0.9"
+                    position="0 0.5 0"
                     rotation="-90 0 0"
                     class="clickable"
                     gesture-handler
                 ></a-video>
             </a-marker>
 
-            <!-- MARCADOR 2: Torre Eiffel -->
+            <!-- MARCADOR 2 -->
             <a-marker
                 type="pattern"
                 preset="custom"
@@ -152,8 +151,9 @@
             >
                 <a-video
                     src="#vid2"
-                    scale="1.5 1.5 1.5"
-                    position="0 0.1 0"
+                    width="1.6"
+                    height="0.9"
+                    position="0 0.5 0"
                     rotation="-90 0 0"
                     class="clickable"
                     gesture-handler
