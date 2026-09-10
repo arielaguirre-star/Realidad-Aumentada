@@ -5,7 +5,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
         <title>Realidad Aumentada</title>
         
-        <!-- Librerías estables -->
         <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
         <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
         <script src="https://raw.githack.com/AR-js-org/studio-backend/master/src/modules/marker/tools/gesture-detector.js"></script>
@@ -19,13 +18,12 @@
             html, body {
                 margin: 0;
                 padding: 0;
-                width: 100%;
-                height: 100%;
+                width: 100vw;
+                height: 100vh;
                 overflow: hidden !important;
                 position: fixed;
             }
 
-            /* Corrección del canvas y la cámara para eliminar la franja blanca lateral */
             #arjs-video {
                 position: fixed !important;
                 top: 0 !important;
@@ -165,25 +163,25 @@
             gesture-detector
         >
             <a-assets>
-                <video id="vid1" src="assets/video1.mp4?v=6" preload="auto" loop crossorigin="anonymous" webkit-playsinline playsinline muted></video>
-                <video id="vid2" src="assets/video2.mp4?v=6" preload="auto" loop crossorigin="anonymous" webkit-playsinline playsinline muted></video>
-                <video id="vid3" src="assets/video3.mp4?v=6" preload="auto" loop crossorigin="anonymous" webkit-playsinline playsinline muted></video>
+                <video id="vid1" src="assets/video1.mp4?v=7" preload="auto" loop crossorigin="anonymous" webkit-playsinline playsinline muted></video>
+                <video id="vid2" src="assets/video2.mp4?v=7" preload="auto" loop crossorigin="anonymous" webkit-playsinline playsinline muted></video>
+                <video id="vid3" src="assets/video3.mp4?v=7" preload="auto" loop crossorigin="anonymous" webkit-playsinline playsinline muted></video>
             </a-assets>
 
             <!-- MARCADOR 1 -->
-            <a-marker type="pattern" preset="custom" url="assets/marker1.patt?v=6" videohandler="target: #vid1" smooth="true" id="marker1">
-                <!-- Se ajustó la rotación a -90 0 0 y las dimensiones a formato 16:9 vertical (1.8 x 3.2) -->
-                <a-video src="#vid1" width="1.8" height="3.2" position="0 0 0" rotation="-90 0 0" class="clickable" gesture-handler></a-video>
+            <a-marker type="pattern" preset="custom" url="assets/marker1.patt?v=7" videohandler="target: #vid1" smooth="true" id="marker1">
+                <!-- Proporción horizontal (3.2 x 1.8) y pegado al marcador (0 0 0) -->
+                <a-video src="#vid1" width="3.2" height="1.8" position="0 0 0" rotation="-90 0 0" class="clickable" gesture-handler></a-video>
             </a-marker>
 
             <!-- MARCADOR 2 -->
-            <a-marker type="pattern" preset="custom" url="assets/marker2.patt?v=6" videohandler="target: #vid2" smooth="true" id="marker2">
-                <a-video src="#vid2" width="1.8" height="3.2" position="0 0 0" rotation="-90 0 0" class="clickable" gesture-handler></a-video>
+            <a-marker type="pattern" preset="custom" url="assets/marker2.patt?v=7" videohandler="target: #vid2" smooth="true" id="marker2">
+                <a-video src="#vid2" width="3.2" height="1.8" position="0 0 0" rotation="-90 0 0" class="clickable" gesture-handler></a-video>
             </a-marker>
 
             <!-- MARCADOR 3 -->
-            <a-marker type="pattern" preset="custom" url="assets/marker3.patt?v=6" videohandler="target: #vid3" smooth="true" id="marker3">
-                <a-video src="#vid3" width="1.8" height="3.2" position="0 0 0" rotation="-90 0 0" class="clickable" gesture-handler></a-video>
+            <a-marker type="pattern" preset="custom" url="assets/marker3.patt?v=7" videohandler="target: #vid3" smooth="true" id="marker3">
+                <a-video src="#vid3" width="3.2" height="1.8" position="0 0 0" rotation="-90 0 0" class="clickable" gesture-handler></a-video>
             </a-marker>
 
             <a-entity camera></a-entity>
