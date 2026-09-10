@@ -26,7 +26,6 @@
                 padding: 20px;
             }
 
-            /* Botón flotante para activar/desactivar sonido */
             #btn-audio {
                 position: fixed;
                 bottom: 20px;
@@ -38,13 +37,18 @@
                 border: 2px solid #ffffff;
                 color: white;
                 font-size: 24px;
-                display: none; /* Se muestra al iniciar */
+                display: none;
                 justify-content: center;
                 align-items: center;
                 z-index: 9998;
                 cursor: pointer;
                 user-select: none;
                 box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            }
+
+            /* Forzar a esconder reproductores nativos que intenten superponerse */
+            video {
+                display: none !important;
             }
         </style>
 
@@ -57,9 +61,20 @@
 
                 var vids = document.querySelectorAll('video');
                 vids.forEach(function(v) {
-                    v.play().then(() => {
-                        v.pause();
-                    }).catch(e => console.log("Permiso de video:", e));
+                    // Forzar reproducción en línea vía propiedad de JavaScript (evita reproductor nativo)
+                    v.setAttribute('playsinline', '');
+                    v.setAttribute('webkit-playsinline', '');
+                    v.muted = true;
+                    
+                    // Inicializar textura en memoria sin pausar abruptamente
+                    var promise = v.play();
+                    if (promise !== undefined) {
+                        promise.then(() => {
+                            if (!v.parentElement.closest('a-marker[videohandler]')) {
+                                v.pause();
+                            }
+                        }).catch(e => console.log(e));
+                    }
                 });
             }
 
@@ -73,11 +88,7 @@
                     v.muted = isMuted;
                 });
 
-                if (isMuted) {
-                    btn.innerHTML = '🔇';
-                } else {
-                    btn.innerHTML = '🔊';
-                }
+                btn.innerHTML = isMuted ? '🔇' : '🔊';
             }
 
             AFRAME.registerComponent('videohandler', {
@@ -90,8 +101,7 @@
 
                     marker.addEventListener('markerFound', function () {
                         if (this.vid) {
-                            this.vid.muted = isMuted; // Mantiene el estado global de audio
-                            this.vid.currentTime = 0;
+                            this.vid.muted = isMuted;
                             var playPromise = this.vid.play();
                             if (playPromise !== undefined) {
                                 playPromise.catch(error => console.log("Error al reproducir:", error));
@@ -110,12 +120,10 @@
     </head>
 
     <body style="margin: 0; overflow: hidden;">
-        <!-- Pantalla de inicio -->
         <div id="btn-start" onclick="startExperience()">
             Toca la pantalla para iniciar la experiencia AR
         </div>
 
-        <!-- Botón para alternar audio -->
         <div id="btn-audio" onclick="toggleAudio()">🔇</div>
 
         <a-scene
