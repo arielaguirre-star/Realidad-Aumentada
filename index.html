@@ -1,7 +1,11 @@
 <!doctype html>
 <html>
     <head>
-        <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+        
+        <!-- Script unificado de A-Frame y AR.js sin caché -->
+        <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
         <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
         <script src="https://raw.githack.com/AR-js-org/studio-backend/master/src/modules/marker/tools/gesture-detector.js"></script>
         <script src="https://raw.githack.com/AR-js-org/studio-backend/master/src/modules/marker/tools/gesture-handler.js"></script>
@@ -13,17 +17,18 @@
                 left: 0;
                 width: 100vw;
                 height: 100vh;
-                background: rgba(0, 0, 0, 0.85);
+                background: rgba(0, 0, 0, 0.9);
                 color: white;
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 font-family: sans-serif;
-                font-size: 1.4rem;
+                font-size: 1.3rem;
                 z-index: 9999;
                 cursor: pointer;
                 text-align: center;
                 padding: 20px;
+                box-sizing: border-box;
             }
 
             #btn-audio {
@@ -46,7 +51,6 @@
                 box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             }
 
-            /* Forzar a esconder reproductores nativos que intenten superponerse */
             video {
                 display: none !important;
             }
@@ -61,18 +65,14 @@
 
                 var vids = document.querySelectorAll('video');
                 vids.forEach(function(v) {
-                    // Forzar reproducción en línea vía propiedad de JavaScript (evita reproductor nativo)
                     v.setAttribute('playsinline', '');
                     v.setAttribute('webkit-playsinline', '');
                     v.muted = true;
                     
-                    // Inicializar textura en memoria sin pausar abruptamente
                     var promise = v.play();
                     if (promise !== undefined) {
                         promise.then(() => {
-                            if (!v.parentElement.closest('a-marker[videohandler]')) {
-                                v.pause();
-                            }
+                            v.pause();
                         }).catch(e => console.log(e));
                     }
                 });
@@ -135,23 +135,24 @@
             gesture-detector
         >
             <a-assets>
-                <video id="vid1" src="assets/video1.mp4" preload="auto" loop crossorigin="anonymous" webkit-playsinline playsinline muted></video>
-                <video id="vid2" src="assets/video2.mp4" preload="auto" loop crossorigin="anonymous" webkit-playsinline playsinline muted></video>
-                <video id="vid3" src="assets/video3.mp4" preload="auto" loop crossorigin="anonymous" webkit-playsinline playsinline muted></video>
+                <!-- Agregamos un identificador de versión (?v=2) para forzar la recarga del video en el celular -->
+                <video id="vid1" src="assets/video1.mp4?v=2" preload="auto" loop crossorigin="anonymous" webkit-playsinline playsinline muted></video>
+                <video id="vid2" src="assets/video2.mp4?v=2" preload="auto" loop crossorigin="anonymous" webkit-playsinline playsinline muted></video>
+                <video id="vid3" src="assets/video3.mp4?v=2" preload="auto" loop crossorigin="anonymous" webkit-playsinline playsinline muted></video>
             </a-assets>
 
             <!-- MARCADOR 1 -->
-            <a-marker type="pattern" preset="custom" url="assets/marker1.patt" videohandler="target: #vid1" smooth="true" id="marker1">
+            <a-marker type="pattern" preset="custom" url="assets/marker1.patt?v=2" videohandler="target: #vid1" smooth="true" id="marker1">
                 <a-video src="#vid1" width="1.6" height="0.9" position="0 0.5 0" rotation="-90 0 0" class="clickable" gesture-handler></a-video>
             </a-marker>
 
             <!-- MARCADOR 2 -->
-            <a-marker type="pattern" preset="custom" url="assets/marker2.patt" videohandler="target: #vid2" smooth="true" id="marker2">
+            <a-marker type="pattern" preset="custom" url="assets/marker2.patt?v=2" videohandler="target: #vid2" smooth="true" id="marker2">
                 <a-video src="#vid2" width="1.6" height="0.9" position="0 0.5 0" rotation="-90 0 0" class="clickable" gesture-handler></a-video>
             </a-marker>
 
             <!-- MARCADOR 3 -->
-            <a-marker type="pattern" preset="custom" url="assets/marker3.patt" videohandler="target: #vid3" smooth="true" id="marker3">
+            <a-marker type="pattern" preset="custom" url="assets/marker3.patt?v=2" videohandler="target: #vid3" smooth="true" id="marker3">
                 <a-video src="#vid3" width="1.6" height="0.9" position="0 0.5 0" rotation="-90 0 0" class="clickable" gesture-handler></a-video>
             </a-marker>
 
