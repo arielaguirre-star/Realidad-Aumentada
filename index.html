@@ -2,13 +2,17 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
         <title>Realidad Aumentada</title>
         
         <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
         <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
         
         <style>
+            * {
+                box-sizing: border-box !important;
+            }
+
             html, body {
                 margin: 0 !important;
                 padding: 0 !important;
@@ -17,6 +21,16 @@
                 overflow: hidden !important;
                 position: fixed !important;
                 background-color: #000000 !important;
+            }
+
+            /* Forzar a la pantalla completa sin franjas laterales */
+            .a-canvas, #arjs-video {
+                width: 100vw !important;
+                height: 100vh !important;
+                left: 0px !important;
+                top: 0px !important;
+                margin: 0px !important;
+                object-fit: cover !important;
             }
 
             #btn-start {
@@ -36,7 +50,6 @@
                 cursor: pointer;
                 text-align: center;
                 padding: 20px;
-                box-sizing: border-box;
             }
 
             #btn-audio {
@@ -63,40 +76,9 @@
         <script>
             var isMuted = true;
 
-            // Corrige la franja lateral y centra la cámara web
-            function fixViewport() {
-                var videoElem = document.querySelector('#arjs-video');
-                var canvasElem = document.querySelector('.a-canvas');
-
-                if (videoElem) {
-                    videoElem.style.width = '100vw';
-                    videoElem.style.height = '100vh';
-                    videoElem.style.objectFit = 'cover';
-                    videoElem.style.marginLeft = '0px';
-                    videoElem.style.marginTop = '0px';
-                    videoElem.style.top = '0px';
-                    videoElem.style.left = '0px';
-                    videoElem.style.position = 'fixed';
-                }
-
-                if (canvasElem) {
-                    canvasElem.style.width = '100vw';
-                    canvasElem.style.height = '100vh';
-                    canvasElem.style.marginLeft = '0px';
-                    canvasElem.style.marginTop = '0px';
-                    canvasElem.style.top = '0px';
-                    canvasElem.style.left = '0px';
-                    canvasElem.style.position = 'fixed';
-                }
-            }
-
-            // Ejecutar la corrección periódicamente al iniciar
-            setInterval(fixViewport, 500);
-
             function startExperience() {
                 document.getElementById('btn-start').style.display = 'none';
                 document.getElementById('btn-audio').style.display = 'flex';
-                fixViewport();
 
                 var vids = document.querySelectorAll('a-assets video');
                 vids.forEach(function(v) {
@@ -162,32 +144,32 @@
 
         <div id="btn-audio" onclick="toggleAudio()">🔇</div>
 
+        <!-- Se removió 'embedded' y se ajustó la configuración de AR.js -->
         <a-scene
             vr-mode-ui="enabled: false;"
             loading-screen="enabled: false;"
-            embedded
-            arjs="sourceType: webcam; debugUIEnabled: false;"
+            arjs="sourceType: webcam; debugUIEnabled: false; displayWidth: 1280; displayHeight: 720;"
             id="scene"
         >
             <a-assets>
-                <video id="vid1" src="assets/video1.mp4?v=10" preload="auto" loop crossorigin="anonymous" webkit-playsinline playsinline muted></video>
-                <video id="vid2" src="assets/video2.mp4?v=10" preload="auto" loop crossorigin="anonymous" webkit-playsinline playsinline muted></video>
-                <video id="vid3" src="assets/video3.mp4?v=10" preload="auto" loop crossorigin="anonymous" webkit-playsinline playsinline muted></video>
+                <video id="vid1" src="assets/video1.mp4?v=11" preload="auto" loop crossorigin="anonymous" webkit-playsinline playsinline muted></video>
+                <video id="vid2" src="assets/video2.mp4?v=11" preload="auto" loop crossorigin="anonymous" webkit-playsinline playsinline muted></video>
+                <video id="vid3" src="assets/video3.mp4?v=11" preload="auto" loop crossorigin="anonymous" webkit-playsinline playsinline muted></video>
             </a-assets>
 
-            <!-- MARCADOR 1 -->
-            <a-marker type="pattern" preset="custom" url="assets/marker1.patt?v=10" videohandler="target: #vid1" smooth="true" id="marker1">
-                <a-video src="#vid1" width="3.2" height="1.8" position="0 0 0" rotation="-90 0 0"></a-video>
+            <!-- MARCADOR 1 (Ajustado para paredes/pantallas con rotation 0 0 0) -->
+            <a-marker type="pattern" preset="custom" url="assets/marker1.patt?v=11" videohandler="target: #vid1" smooth="true" id="marker1">
+                <a-video src="#vid1" width="3.2" height="1.8" position="0 0 0" rotation="0 0 0"></a-video>
             </a-marker>
 
             <!-- MARCADOR 2 -->
-            <a-marker type="pattern" preset="custom" url="assets/marker2.patt?v=10" videohandler="target: #vid2" smooth="true" id="marker2">
-                <a-video src="#vid2" width="3.2" height="1.8" position="0 0 0" rotation="-90 0 0"></a-video>
+            <a-marker type="pattern" preset="custom" url="assets/marker2.patt?v=11" videohandler="target: #vid2" smooth="true" id="marker2">
+                <a-video src="#vid2" width="3.2" height="1.8" position="0 0 0" rotation="0 0 0"></a-video>
             </a-marker>
 
             <!-- MARCADOR 3 -->
-            <a-marker type="pattern" preset="custom" url="assets/marker3.patt?v=10" videohandler="target: #vid3" smooth="true" id="marker3">
-                <a-video src="#vid3" width="3.2" height="1.8" position="0 0 0" rotation="-90 0 0"></a-video>
+            <a-marker type="pattern" preset="custom" url="assets/marker3.patt?v=11" videohandler="target: #vid3" smooth="true" id="marker3">
+                <a-video src="#vid3" width="3.2" height="1.8" position="0 0 0" rotation="0 0 0"></a-video>
             </a-marker>
 
             <a-entity camera></a-entity>
