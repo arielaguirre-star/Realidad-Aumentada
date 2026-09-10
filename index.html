@@ -5,44 +5,59 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
         <title>Realidad Aumentada</title>
         
+        <!-- Librerías de A-Frame, AR.js y Gestos -->
         <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
         <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
         <script src="https://raw.githack.com/AR-js-org/studio-backend/master/src/modules/marker/tools/gesture-detector.js"></script>
         <script src="https://raw.githack.com/AR-js-org/studio-backend/master/src/modules/marker/tools/gesture-handler.js"></script>
         
         <style>
-            * {
-                box-sizing: border-box;
+            /* Bloquear cualquier scroll o franja blanca en bordes */
+            *, *:before, *:after {
+                box-sizing: border-box !important;
             }
 
-            html, body {
-                margin: 0;
-                padding: 0;
-                width: 100vw;
-                height: 100vh;
+            html {
+                width: 100% !important;
+                height: 100% !important;
                 overflow: hidden !important;
-                position: fixed;
+                background-color: #000000 !important;
             }
 
-            #arjs-video {
+            body {
+                width: 100vw !important;
+                height: 100vh !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: hidden !important;
                 position: fixed !important;
                 top: 0 !important;
                 left: 0 !important;
-                width: 100vw !important;
-                height: 100vh !important;
-                object-fit: cover !important;
-                z-index: -2 !important;
+                background-color: #000000 !important;
             }
 
+            /* Deshabilitar desbordamientos del canvas 3D y forzar pantalla completa */
             .a-canvas {
-                position: fixed !important;
+                position: absolute !important;
                 top: 0 !important;
                 left: 0 !important;
-                width: 100vw !important;
-                height: 100vh !important;
-                z-index: -1 !important;
+                width: 100% !important;
+                height: 100% !important;
+                z-index: 1 !important;
             }
 
+            /* Video de la cámara web detrás del canvas */
+            #arjs-video {
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                object-fit: cover !important;
+                z-index: 0 !important;
+            }
+
+            /* Interfaz de usuario por encima de la escena 3D */
             #btn-start {
                 position: fixed;
                 top: 0;
@@ -90,17 +105,18 @@
                 document.getElementById('btn-start').style.display = 'none';
                 document.getElementById('btn-audio').style.display = 'flex';
 
+                // Forzar la inicialización y desmuteado de los elementos de video
                 var vids = document.querySelectorAll('a-assets video');
                 vids.forEach(function(v) {
                     v.setAttribute('playsinline', '');
                     v.setAttribute('webkit-playsinline', '');
                     v.muted = true;
                     
-                    var promise = v.play();
-                    if (promise !== undefined) {
-                        promise.then(() => {
+                    var playPromise = v.play();
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
                             v.pause();
-                        }).catch(e => console.log(e));
+                        }).catch(e => console.log("Init video err:", e));
                     }
                 });
             }
@@ -163,24 +179,23 @@
             gesture-detector
         >
             <a-assets>
-                <video id="vid1" src="assets/video1.mp4?v=7" preload="auto" loop crossorigin="anonymous" webkit-playsinline playsinline muted></video>
-                <video id="vid2" src="assets/video2.mp4?v=7" preload="auto" loop crossorigin="anonymous" webkit-playsinline playsinline muted></video>
-                <video id="vid3" src="assets/video3.mp4?v=7" preload="auto" loop crossorigin="anonymous" webkit-playsinline playsinline muted></video>
+                <video id="vid1" src="assets/video1.mp4?v=8" preload="auto" loop crossorigin="anonymous" webkit-playsinline playsinline muted></video>
+                <video id="vid2" src="assets/video2.mp4?v=8" preload="auto" loop crossorigin="anonymous" webkit-playsinline playsinline muted></video>
+                <video id="vid3" src="assets/video3.mp4?v=8" preload="auto" loop crossorigin="anonymous" webkit-playsinline playsinline muted></video>
             </a-assets>
 
             <!-- MARCADOR 1 -->
-            <a-marker type="pattern" preset="custom" url="assets/marker1.patt?v=7" videohandler="target: #vid1" smooth="true" id="marker1">
-                <!-- Proporción horizontal (3.2 x 1.8) y pegado al marcador (0 0 0) -->
+            <a-marker type="pattern" preset="custom" url="assets/marker1.patt?v=8" videohandler="target: #vid1" smooth="true" id="marker1">
                 <a-video src="#vid1" width="3.2" height="1.8" position="0 0 0" rotation="-90 0 0" class="clickable" gesture-handler></a-video>
             </a-marker>
 
             <!-- MARCADOR 2 -->
-            <a-marker type="pattern" preset="custom" url="assets/marker2.patt?v=7" videohandler="target: #vid2" smooth="true" id="marker2">
+            <a-marker type="pattern" preset="custom" url="assets/marker2.patt?v=8" videohandler="target: #vid2" smooth="true" id="marker2">
                 <a-video src="#vid2" width="3.2" height="1.8" position="0 0 0" rotation="-90 0 0" class="clickable" gesture-handler></a-video>
             </a-marker>
 
             <!-- MARCADOR 3 -->
-            <a-marker type="pattern" preset="custom" url="assets/marker3.patt?v=7" videohandler="target: #vid3" smooth="true" id="marker3">
+            <a-marker type="pattern" preset="custom" url="assets/marker3.patt?v=8" videohandler="target: #vid3" smooth="true" id="marker3">
                 <a-video src="#vid3" width="3.2" height="1.8" position="0 0 0" rotation="-90 0 0" class="clickable" gesture-handler></a-video>
             </a-marker>
 
